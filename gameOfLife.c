@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 199309L
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,10 +8,13 @@
 /*
  * This porgram implements the Game of Life by John Conway.
  * The rules are:
- * Any live cell with fewer than two live neighbours dies (underpopulation).
- * Any live cell with two or three live neighbours lives to next generation.
- * Any live cell with more than three live neighbours dies (overpopulation).
- * Any dead cell with exactly three live neighbours comes alive.
+ * 1. Any live cell with fewer than two live neighbours dies 
+ *    (underpopulation).
+ * 2. Any live cell with two or three live neighbours lives to next 
+ *    generation.
+ * 3. Any live cell with more than three live neighbours dies 
+ *    (overpopulation).
+ * 4. Any dead cell with exactly three live neighbours comes alive.
  */
 
 /* Game Board: '*' represents alive cell; ' ' represents dead cell
@@ -28,23 +33,28 @@ used for calculating the rules correctly.
 However, the input file provided with the -input option must follow the
 following convention, for easier data entering purposes:
 '1' represents alive cell; '0' represents dead cell.
+Also the program internally uses this convention of 1s and 0s.
 For a sample input file, see the "inputGame" file.
 */
 
 void usage(char *fileName);
 int * createGame(int isRand, int isInput, int *row, int *col, char **argv);
-void nextGen(int automaton[], int *row, int *col);
-void addPadding(int automaton[], int *row, int *col);
-void printGame(int automaton[], int *row, int *col);
+void nextGen(int automaton[], int automatonPadded[], int row, int col);
+int * addPadding(int automaton[], int *row, int *col);
+void copyInPadded(int automaton[], int automatonPadded[], int row, int col);
+void printGame(int automaton[], int row, int col);
 
 
 int main(int argc, char *argv[]) {
     int i;
+    long timeN;
+    struct timespec sleepValue = {0};
     int rand = 0;
     int input = 0;
     int row;
     int col;
     int *automaton;
+    int *automatonPadded;
 
     if (argc < 3) {
         usage(argv[0]);
@@ -60,11 +70,20 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    timeN = atoi(argv[3]) * 1000000;
+    sleepValue.tv_nsec = timeN;
+
     automaton = createGame(rand, input, &row, &col, argv);
 
-    printGame(automaton, &row, &col);
+    while (1) {
+        printGame(automaton, row, col);
+        automatonPadded = addPadding(automaton, &row, &col);
+        nextGen(automaton, automatonPadded, row + 2, col + 2);
+        nanosleep(&sleepValue, NULL);
+    }
 
     free(automaton);
+    free(automatonPadded);
 
     return 0;
 }
@@ -92,18 +111,13 @@ int * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
         *col = atoi(argv[3]);
         mult = *row * *col;
 
-        automaton = (int*)calloc(mult, sizeof(int));
+        automaton = (int*)malloc(mult * sizeof(int));
         if (automaton == NULL) {
             fprintf(stderr, "Error! Memory allocation failed!\n");
             exit(1);
         }
         for (i = 0; i < mult; i++) {
-            if (rand() % 2) {
-                automaton[i] = '*';
-            }
-            else {
-                automaton[i] = ' ';
-            }
+            automaton[i] = rand() % 2;
         }
         return automaton;
     }
@@ -144,7 +158,7 @@ int * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
         }
         mult = *row * *col;
 
-        automaton = (int*)calloc(mult, sizeof(int));
+        automaton = (int*)malloc(mult * sizeof(int));
         if (automaton == NULL) {
             fprintf(stderr, "Error! Memory allocation failed!\n");
             exit(1);
@@ -156,11 +170,11 @@ int * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
         while(!feof(fp)) {
             c = fgetc(fp);
             if(c == '1') {
-                automaton[x] = '*';
+                automaton[x] = 1;
                 x++;
             }
             else if (c == '0') {
-                automaton[x] = ' ';
+                automaton[x] = 0;
                 x++;
             }
         }
@@ -173,29 +187,105 @@ int * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
     return 0;
 }
 
-void nextGen(int *automaton, int *row, int *col) {
-
-
-}
-
-void addPadding(int automaton[], int *row, int *col) {
-
-
-}
-
-void printGame(int *automaton, int *row, int *col) {
+void nextGen(int *automaton, int *automatonPadded, int row, int col) {
     int i;
     int j;
-    int index;
+    int sumAlive;
+
+    for (i = 0; i < row - 2; i++) {
+        for (j = 0; j < col - 2; j++) {
+            /* Compute sum of alive cells surrounding current cell */
+            sumAlive = automatonPadded[col * i + j] + 
+                       automatonPadded[col * i + j + 1] + 
+                       automatonPadded[col * i + j + 2] + 
+                       automatonPadded[col * (i + 1) + j] + 
+                       automatonPadded[col * (i + 1) + j + 2] + 
+                       automatonPadded[col * (i + 2) + j] + 
+                       automatonPadded[col * (i + 2) + j + 1] + 
+                       automatonPadded[col * (i + 2) + j + 2];
+            /* Rules 1, 2, 3 */
+            if(automaton[i * (col - 2) + j]) {
+                if((sumAlive < 2) || (sumAlive > 3)){
+                    automaton[i * (col - 2) + j] = 0;
+                }
+            }
+            else {
+                /* Rule 4 */
+                if(sumAlive == 3){                    
+                    automaton[i * (col - 2) + j] = 1;
+                }
+            }
+            sumAlive = 0;
+        }
+    }
+}
+
+int * addPadding(int automaton[], int *row, int *col) {
+    int *automatonPadded;
+    int size = (*row + 2) * (*col + 2);
+    int i = 0;
+
+    automatonPadded = (int*)malloc(size * sizeof(int));
+
+    for (i = 0; i < *col; i++) {
+        /* Copying bottom row into top empty line */
+        automatonPadded[i + 1] = automaton[*col * (*row - 1) + i];
+
+        /* Copying top row into bottom empty line */
+        automatonPadded[(*col + 2) * (*row + 1) + i + 1] = automaton[i];
+    }
+
+    for (i = 0; i < *row; i++) {
+        /* Copying right column into left empty line */
+        automatonPadded[(*col + 2) * (i + 1)] = 
+            automaton[(*col * i) + (*col - 1) ];
+        
+        /* Copying left column into right empty line */
+        automatonPadded[(*col + 2) * (i + 2) - 1] = automaton[*col * i];
+    }
+
+    /* Copying bottom-right corner into top-left empty corner */
+    automatonPadded[0] = automaton[(*col * *row) - 1];
+
+    /* Copying top-left corner into bottom-right empty corner */
+    automatonPadded[(*col + 2) * (*row + 2) - 1] = automaton[0];
+
+    /* Copying bottom-left corner into top-right empty corner */
+    automatonPadded[(*col + 2) - 1] = 
+        automaton[*col * (*row - 1)];
+
+    /* Copying top-right corner into bottom-left empty corner */
+    automatonPadded[(*col + 2) * (*row + 2 - 1)] = automaton[*col - 1];
+
+    /* Copying the original automaton into the center of the padded one */
+    copyInPadded(automaton, automatonPadded, *row, *col);
+
+    return automatonPadded;
+}
+
+void copyInPadded(int automaton[], int automatonPadded[], int row, int col) {
+    int i;
+    int j;
+
+    for (i = 0; i < row; i++) {
+        for (j = 0; j < col; j++) {
+            automatonPadded[(col + 2) * (i + 1) + j + 1] = 
+                automaton[i * col + j];
+        }
+    }
+}
+
+void printGame(int *automaton, int row, int col) {
+    int i;
+    int j;
 
     /* Clear screen */
     /* Could also be: printf("\e[1;1H\e[2J"); */
     printf("\x1B[1;1H\x1B[2J");
 
-    for (i = 0; i < *row; i++) {
-        for (j = 0; j < *col; j++) {
-            index = i * *col + j;
-            printf("%c", automaton[index]);
+    for (i = 0; i < row; i++) {
+        for (j = 0; j < col; j++) {
+            printf("%c", automaton[i * col + j] ? '*' : ' ');
         }
         printf("\n");
     }
