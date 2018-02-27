@@ -49,7 +49,7 @@ Supplying an input board:<br>
 Note: default timeMilli is 200.<br>
 Note: default number of generations is infinite.
 
-#### Example:
+#### Examples:
 1. Two Gosper Glider Guns
 Compile: <br>
   `gcc gameOfLife.c -o gameOfLife`<br>
