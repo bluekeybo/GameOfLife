@@ -2,7 +2,7 @@
 #### A terminal-based implementation in C
 
 This program implements the Game of Life by John Conway in C.
-The rules are:
+#### The rules are:
 1. Any live cell with fewer than two live neighbours dies 
    (underpopulation).
 2. Any live cell with two or three live neighbours lives to next 
@@ -11,7 +11,7 @@ The rules are:
    (overpopulation).
 4. Any dead cell with exactly three live neighbours comes alive.
 
-##### Game Board: 'o' represents alive cell; ' ' represents dead cell
+##### Game Board: 'o' represents an alive cell; ' ' represents a dead cell
 ```text
 ..........................
 .            oooo        .
