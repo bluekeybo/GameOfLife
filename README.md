@@ -58,4 +58,4 @@ This will run the game using the input file provided as input and updating the b
 
 Here is the resulting simulation:<br>
 ![Two Gosper Glider Guns](https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGosperGliderGuns.gif)
-<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGosperGliderGuns.gif" alt="Two Gosper Glider Guns" width="200"/>
+<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGosperGliderGuns.gif" alt="Two Gosper Glider Guns" width="500"/>
