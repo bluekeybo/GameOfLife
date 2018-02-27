@@ -24,22 +24,20 @@ This program implements the Game of Life by John Conway in C.
 
 Dots are used for creating the wrap around effect. Each dot is replaced by the opposite side's value. These extra values are not printed, they're just used for calculating the rules correctly. This allows the automata to develop as if the board size is infinite.
 
-However, the input file provided with the -input option must adhere to the following convention, for easier data entering purposes:
+However, the input file provided with the *-input* option must adhere to the following convention, for easier data entering purposes:
 
 ##### Input file game board: '1' represents an alive cell; '0' represents a dead cell
 ```text
-..........................
-.000000000000111100000000.
-.000000111000111000000000.
-.000000000001111000000000.
-.000000111110001000000000.
-.000000000111111110000000.
-..........................
+000000000000111100000000
+000000111000111000000000
+000000000001111000000000
+000000111110001000000000
+000000000111111110000000
 ```
 
 Also the program internally uses this convention of 1s and 0s.
 
-For a sample input file, see the "inputGame" file in the *src* directory.
+For a sample input file, see the **inputGame** file in the **_src_** directory.
 
 #### Usage:
 Usage for generating a random board:
