@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
     }
 
     if(generations) {
-        for (i = 0; i < generations; i++) {
+        for (i = 0; i < generations + 1; i++) {
             printGame(automaton, row, col);
             addPadding(automaton, automatonPadded, row, col);
             nextGen(automaton, automatonPadded, row + 2, col + 2);
