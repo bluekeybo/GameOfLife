@@ -46,11 +46,11 @@ void nextGen(int automaton[], int automatonPadded[], int row, int col);
 void addPadding(int automaton[], int automatonPadded[], int row, int col);
 void printGame(int automaton[], int row, int col);
 
-
 int main(int argc, char *argv[]) {
     /* Default time per generation is 200 milliseconds */
     long timeN = 200 * NANOMILLI;
     struct timespec sleepValue = {0};
+    int generations = 0;
     int i;
     int rand = 0;
     int input = 0;
@@ -71,21 +71,12 @@ int main(int argc, char *argv[]) {
         else if(!strcmp(argv[i], "-input")) {
             input = 1;
         }
-    }
-
-    /* Setting timing variable for the time per generation */
-    if(rand && !input) {
-        if(argc == 5) {
-            timeN = atoi(argv[4]) * NANOMILLI;
+        else if(!strcmp(argv[i], "-time")) {
+            timeN = atoi(argv[i + 1]) * NANOMILLI;
         }
-    }
-    else if(input && !rand) {
-        if(argc == 4) {
-            timeN = atoi(argv[3]) * NANOMILLI;
+        else if(!strcmp(argv[i], "-gen")) {
+            generations = atoi(argv[i + 1]);
         }
-    }
-    else {
-        usage(argv[0]);
     }
 
     sleepValue.tv_nsec = timeN;
@@ -98,11 +89,21 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    while (1) {
+    if(generations) {
+        for (i = 0; i < generations; i++) {
+            printGame(automaton, row, col);
+            addPadding(automaton, automatonPadded, row, col);
+            nextGen(automaton, automatonPadded, row + 2, col + 2);
+            nanosleep(&sleepValue, NULL);
+        }
+    }
+    else {
+        while (1) {
         printGame(automaton, row, col);
         addPadding(automaton, automatonPadded, row, col);
         nextGen(automaton, automatonPadded, row + 2, col + 2);
         nanosleep(&sleepValue, NULL);
+        }
     }
 
     free(automaton);
@@ -113,10 +114,11 @@ int main(int argc, char *argv[]) {
 
 void usage(char *fileName) {
     fprintf(stderr, "Usage for generating a random board:\n\
-    %s -random rows columns [timeMilli]\n\n\
+    %s -random rows columns [-time timeMilli] [-gen numberOfGen]\n\n\
 Usage for supplying an input board:\n\
-    %s -input inputGame [timeMilli]\n\n\
-Note: default timeMilli is 200.\n", fileName, fileName);
+    %s -input inputGame [-time timeMilli] [-gen numberOfGen]\n\n\
+Note: default timeMilli is 200.\n\
+Note: default generations is infinite.\n", fileName, fileName);
     exit(1);
 }
 
