@@ -42,8 +42,9 @@ Usage for generating a random board:
     <filename> -random rows columns [-time timeMilli] [-gen numberOfGen]
 Usage for supplying an input board:
     <filename> -input inputGame [-time timeMilli] [-gen numberOfGen]
-Note: default timeMilli is 200.
-Note: default number of generations is infinite.
+Notes: default timeMilli is 200 (board updates every 200 milliseconds)
+       default number of generations is infinite
+       to cancel an infinite program at any time just press CTRL + \
 */
 
 /* This line used to enable nanoseconds */
