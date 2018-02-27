@@ -41,10 +41,17 @@ For a sample input file, see the **inputGame** file in the **_src_** directory.
 
 #### Usage:
 To compile, run:<br>
-  `gcc gameOfLife.c -o <filename>`
+  `gcc gameOfLife.c -o <filename>`<br>
 Generating a random board:<br>
   `<filename> -random rows columns [-time timeMilli] [-gen numberOfGen]`<br>
 Supplying an input board:<br>
   `<filename> -input inputGame [-time timeMilli] [-gen numberOfGen]`<br>
 Note: default timeMilli is 200.<br>
 Note: default number of generations is infinite.
+
+#### Example:
+Compile: <br>
+  `gcc gameOfLife.c -o gameOfLife`<br>
+Run: <br>
+  `./gameOfLife -input twoGosperGliderGuns -time 150`<br>
+This will run the game using the input file provided as input and updating the board every 150 milliseconds. Since *-gen* option was not provided, the program will run indefinitely (until user stops it with CTRL + \\).
