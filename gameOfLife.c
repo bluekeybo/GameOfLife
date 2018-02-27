@@ -1,10 +1,3 @@
-#define _POSIX_C_SOURCE 199309L
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
 /*
  * This porgram implements the Game of Life by John Conway.
  * The rules are:
@@ -37,18 +30,28 @@ Also the program internally uses this convention of 1s and 0s.
 For a sample input file, see the "inputGame" file.
 */
 
+/* This line used to enable nanoseconds */
+#define _POSIX_C_SOURCE 199309L
+/* Nanoseconds in a millisecond */
+#define NANOMILLI 1000000
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
 void usage(char *fileName);
 int * createGame(int isRand, int isInput, int *row, int *col, char **argv);
 void nextGen(int automaton[], int automatonPadded[], int row, int col);
-int * addPadding(int automaton[], int *row, int *col);
-void copyInPadded(int automaton[], int automatonPadded[], int row, int col);
+void addPadding(int automaton[], int automatonPadded[], int row, int col);
 void printGame(int automaton[], int row, int col);
 
 
 int main(int argc, char *argv[]) {
-    int i;
-    long timeN;
+    /* Default time per generation is 200 milliseconds */
+    long timeN = 200 * NANOMILLI;
     struct timespec sleepValue = {0};
+    int i;
     int rand = 0;
     int input = 0;
     int row;
@@ -70,14 +73,34 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    timeN = atoi(argv[3]) * 1000000;
+    /* Setting timing variable for the time per generation */
+    if(rand && !input) {
+        if(argc == 5) {
+            timeN = atoi(argv[4]) * NANOMILLI;
+        }
+    }
+    else if(input && !rand) {
+        if(argc == 4) {
+            timeN = atoi(argv[3]) * NANOMILLI;
+        }
+    }
+    else {
+        usage(argv[0]);
+    }
+
     sleepValue.tv_nsec = timeN;
 
     automaton = createGame(rand, input, &row, &col, argv);
 
+    automatonPadded = (int*)malloc((row + 2) * (col + 2) * sizeof(int));
+    if (automatonPadded == NULL) {
+        fprintf(stderr, "Error! Memory allocation failed!\n");
+        exit(1);
+    }
+
     while (1) {
         printGame(automaton, row, col);
-        automatonPadded = addPadding(automaton, &row, &col);
+        addPadding(automaton, automatonPadded, row, col);
         nextGen(automaton, automatonPadded, row + 2, col + 2);
         nanosleep(&sleepValue, NULL);
     }
@@ -89,8 +112,11 @@ int main(int argc, char *argv[]) {
 }
 
 void usage(char *fileName) {
-    fprintf(stderr, "usage: %s [-random rows columns] [-input inputGame]\n",
-         fileName);
+    fprintf(stderr, "Usage for generating a random board:\n\
+    %s -random rows columns [timeMilli]\n\n\
+Usage for supplying an input board:\n\
+    %s -input inputGame [timeMilli]\n\n\
+Note: default timeMilli is 200.\n", fileName, fileName);
     exit(1);
 }
 
@@ -220,53 +246,41 @@ void nextGen(int *automaton, int *automatonPadded, int row, int col) {
     }
 }
 
-int * addPadding(int automaton[], int *row, int *col) {
-    int *automatonPadded;
-    int size = (*row + 2) * (*col + 2);
+void addPadding(int automaton[], int automatonPadded[], int row, int col) {
     int i = 0;
+    int j = 0;
 
-    automatonPadded = (int*)malloc(size * sizeof(int));
-
-    for (i = 0; i < *col; i++) {
+    for (i = 0; i < col; i++) {
         /* Copying bottom row into top empty line */
-        automatonPadded[i + 1] = automaton[*col * (*row - 1) + i];
+        automatonPadded[i + 1] = automaton[col * (row - 1) + i];
 
         /* Copying top row into bottom empty line */
-        automatonPadded[(*col + 2) * (*row + 1) + i + 1] = automaton[i];
+        automatonPadded[(col + 2) * (row + 1) + i + 1] = automaton[i];
     }
 
-    for (i = 0; i < *row; i++) {
+    for (i = 0; i < row; i++) {
         /* Copying right column into left empty line */
-        automatonPadded[(*col + 2) * (i + 1)] = 
-            automaton[(*col * i) + (*col - 1) ];
+        automatonPadded[(col + 2) * (i + 1)] = 
+            automaton[(col * i) + (col - 1) ];
         
         /* Copying left column into right empty line */
-        automatonPadded[(*col + 2) * (i + 2) - 1] = automaton[*col * i];
+        automatonPadded[(col + 2) * (i + 2) - 1] = automaton[col * i];
     }
 
     /* Copying bottom-right corner into top-left empty corner */
-    automatonPadded[0] = automaton[(*col * *row) - 1];
+    automatonPadded[0] = automaton[(col * row) - 1];
 
     /* Copying top-left corner into bottom-right empty corner */
-    automatonPadded[(*col + 2) * (*row + 2) - 1] = automaton[0];
+    automatonPadded[(col + 2) * (row + 2) - 1] = automaton[0];
 
     /* Copying bottom-left corner into top-right empty corner */
-    automatonPadded[(*col + 2) - 1] = 
-        automaton[*col * (*row - 1)];
+    automatonPadded[(col + 2) - 1] = 
+        automaton[col * (row - 1)];
 
     /* Copying top-right corner into bottom-left empty corner */
-    automatonPadded[(*col + 2) * (*row + 2 - 1)] = automaton[*col - 1];
+    automatonPadded[(col + 2) * (row + 2 - 1)] = automaton[col - 1];
 
     /* Copying the original automaton into the center of the padded one */
-    copyInPadded(automaton, automatonPadded, *row, *col);
-
-    return automatonPadded;
-}
-
-void copyInPadded(int automaton[], int automatonPadded[], int row, int col) {
-    int i;
-    int j;
-
     for (i = 0; i < row; i++) {
         for (j = 0; j < col; j++) {
             automatonPadded[(col + 2) * (i + 1) + j + 1] = 
