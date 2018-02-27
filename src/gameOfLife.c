@@ -47,7 +47,6 @@ Notes: default timeMilli is 200 (board updates every 200 milliseconds)
        to cancel an infinite program at any time just press CTRL + \
 */
 
-
 /* This line used to enable nanoseconds */
 #define _POSIX_C_SOURCE 199309L
 /* Nanoseconds in a millisecond */
