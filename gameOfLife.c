@@ -8,9 +8,8 @@
  * 3. Any live cell with more than three live neighbours dies 
  *    (overpopulation).
  * 4. Any dead cell with exactly three live neighbours comes alive.
- */
 
-/* Game Board: '*' represents alive cell; ' ' represents dead cell
+Game Board: '*' represents alive cell; ' ' represents dead cell
 ..........................
 .            ****        .
 .      ***   ***         .
@@ -25,9 +24,26 @@ used for calculating the rules correctly.
 
 However, the input file provided with the -input option must follow the
 following convention, for easier data entering purposes:
-'1' represents alive cell; '0' represents dead cell.
+
+Input file game board: '1' represents alive cell; '0' represents dead cell
+..........................
+.000000000000111100000000.
+.000000111000111000000000.
+.000000000001111000000000.
+.000000111110001000000000.
+.000000000111111110000000.
+..........................
+
 Also the program internally uses this convention of 1s and 0s.
 For a sample input file, see the "inputGame" file.
+
+Usage:
+Usage for generating a random board:
+    <filename> -random rows columns [-time timeMilli] [-gen numberOfGen]
+Usage for supplying an input board:
+    <filename> -input inputGame [-time timeMilli] [-gen numberOfGen]
+Note: default timeMilli is 200.
+Note: default number of generations is infinite.
 */
 
 /* This line used to enable nanoseconds */
@@ -37,14 +53,15 @@ For a sample input file, see the "inputGame" file.
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <time.h>
 
 void usage(char *fileName);
-int * createGame(int isRand, int isInput, int *row, int *col, char **argv);
-void nextGen(int automaton[], int automatonPadded[], int row, int col);
-void addPadding(int automaton[], int automatonPadded[], int row, int col);
-void printGame(int automaton[], int row, int col);
+bool * createGame(int isRand, int isInput, int *row, int *col, char **argv);
+void nextGen(bool automaton[], bool automatonPadded[], int row, int col);
+void addPadding(bool automaton[], bool automatonPadded[], int row, int col);
+void printGame(bool automaton[], int row, int col);
 
 int main(int argc, char *argv[]) {
     /* Default time per generation is 200 milliseconds */
@@ -56,8 +73,8 @@ int main(int argc, char *argv[]) {
     int input = 0;
     int row;
     int col;
-    int *automaton;
-    int *automatonPadded;
+    bool *automaton;
+    bool *automatonPadded;
 
     if (argc < 3) {
         usage(argv[0]);
@@ -83,7 +100,7 @@ int main(int argc, char *argv[]) {
 
     automaton = createGame(rand, input, &row, &col, argv);
 
-    automatonPadded = (int*)malloc((row + 2) * (col + 2) * sizeof(int));
+    automatonPadded = (bool*)malloc((row + 2) * (col + 2) * sizeof(bool));
     if (automatonPadded == NULL) {
         fprintf(stderr, "Error! Memory allocation failed!\n");
         exit(1);
@@ -118,12 +135,12 @@ void usage(char *fileName) {
 Usage for supplying an input board:\n\
     %s -input inputGame [-time timeMilli] [-gen numberOfGen]\n\n\
 Note: default timeMilli is 200.\n\
-Note: default generations is infinite.\n", fileName, fileName);
+Note: default number of generations is infinite.\n", fileName, fileName);
     exit(1);
 }
 
-int * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
-    int *automaton;
+bool * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
+    bool *automaton;
     char *fileName;
     FILE *fp;
     int c;
@@ -139,7 +156,7 @@ int * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
         *col = atoi(argv[3]);
         mult = *row * *col;
 
-        automaton = (int*)malloc(mult * sizeof(int));
+        automaton = (bool*)malloc(mult * sizeof(bool));
         if (automaton == NULL) {
             fprintf(stderr, "Error! Memory allocation failed!\n");
             exit(1);
@@ -186,7 +203,7 @@ int * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
         }
         mult = *row * *col;
 
-        automaton = (int*)malloc(mult * sizeof(int));
+        automaton = (bool*)malloc(mult * sizeof(bool));
         if (automaton == NULL) {
             fprintf(stderr, "Error! Memory allocation failed!\n");
             exit(1);
@@ -215,7 +232,7 @@ int * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
     return 0;
 }
 
-void nextGen(int *automaton, int *automatonPadded, int row, int col) {
+void nextGen(bool *automaton, bool *automatonPadded, int row, int col) {
     int i;
     int j;
     int sumAlive;
@@ -233,13 +250,13 @@ void nextGen(int *automaton, int *automatonPadded, int row, int col) {
                        automatonPadded[col * (i + 2) + j + 2];
             /* Rules 1, 2, 3 */
             if(automaton[i * (col - 2) + j]) {
-                if((sumAlive < 2) || (sumAlive > 3)){
+                if((sumAlive < 2) || (sumAlive > 3)) {
                     automaton[i * (col - 2) + j] = 0;
                 }
             }
             else {
                 /* Rule 4 */
-                if(sumAlive == 3){                    
+                if(sumAlive == 3) {                    
                     automaton[i * (col - 2) + j] = 1;
                 }
             }
@@ -248,7 +265,7 @@ void nextGen(int *automaton, int *automatonPadded, int row, int col) {
     }
 }
 
-void addPadding(int automaton[], int automatonPadded[], int row, int col) {
+void addPadding(bool automaton[], bool automatonPadded[], int row, int col) {
     int i = 0;
     int j = 0;
 
@@ -276,8 +293,7 @@ void addPadding(int automaton[], int automatonPadded[], int row, int col) {
     automatonPadded[(col + 2) * (row + 2) - 1] = automaton[0];
 
     /* Copying bottom-left corner into top-right empty corner */
-    automatonPadded[(col + 2) - 1] = 
-        automaton[col * (row - 1)];
+    automatonPadded[(col + 2) - 1] = automaton[col * (row - 1)];
 
     /* Copying top-right corner into bottom-left empty corner */
     automatonPadded[(col + 2) * (row + 2 - 1)] = automaton[col - 1];
@@ -291,7 +307,7 @@ void addPadding(int automaton[], int automatonPadded[], int row, int col) {
     }
 }
 
-void printGame(int *automaton, int row, int col) {
+void printGame(bool *automaton, int row, int col) {
     int i;
     int j;
 
