@@ -55,3 +55,6 @@ Compile: <br>
 Run: <br>
   `./gameOfLife -input twoGosperGliderGuns -time 150`<br>
 This will run the game using the input file provided as input and updating the board every 150 milliseconds. Since *-gen* option was not provided, the program will run indefinitely (until user stops it with CTRL + \\).
+
+Here is the resulting simulation:<br>
+![Two Gosper Glider Guns](https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGosperGliderGuns.gif)
