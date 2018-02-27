@@ -40,9 +40,11 @@ Also the program internally uses this convention of 1s and 0s.
 For a sample input file, see the **inputGame** file in the **_src_** directory.
 
 #### Usage:
-Usage for generating a random board:<br>
-    \<filename\> -random rows columns [-time timeMilli] [-gen numberOfGen]
-Usage for supplying an input board:<br>
-    \<filename\> -input inputGame [-time timeMilli] [-gen numberOfGen]
+To compile, run:<br>
+  `gcc gameOfLife.c -o <filename>`
+Generating a random board:<br>
+  `<filename> -random rows columns [-time timeMilli] [-gen numberOfGen]`<br>
+Supplying an input board:<br>
+  `<filename> -input inputGame [-time timeMilli] [-gen numberOfGen]`<br>
 Note: default timeMilli is 200.<br>
 Note: default number of generations is infinite.
