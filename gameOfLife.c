@@ -9,13 +9,13 @@
  *    (overpopulation).
  * 4. Any dead cell with exactly three live neighbours comes alive.
 
-Game Board: '*' represents alive cell; ' ' represents dead cell
+Game Board: 'o' represents alive cell; ' ' represents dead cell
 ..........................
-.            ****        .
-.      ***   ***         .
-.           ****         .
-.      *****   *         .
-.         ********       .
+.            oooo        .
+.      ooo   ooo      o  .
+.           oooo       o .
+.      ooooo   o     ooo .
+.         oooooooo       .
 ..........................
 
 Dots are used for creating the wrap around effect. Each dot is replaced by
@@ -134,8 +134,10 @@ void usage(char *fileName) {
     %s -random rows columns [-time timeMilli] [-gen numberOfGen]\n\n\
 Usage for supplying an input board:\n\
     %s -input inputGame [-time timeMilli] [-gen numberOfGen]\n\n\
-Note: default timeMilli is 200.\n\
-Note: default number of generations is infinite.\n", fileName, fileName);
+Notes: default timeMilli is 200 (board updates every 200 milliseconds).\n\
+      default number of generations is infinite.\n\
+      To cancel an infinite program at any time just press CTRL + \\.\n", 
+        fileName, fileName);
     exit(1);
 }
 
@@ -317,7 +319,7 @@ void printGame(bool *automaton, int row, int col) {
 
     for (i = 0; i < row; i++) {
         for (j = 0; j < col; j++) {
-            printf("%c", automaton[i * col + j] ? '*' : ' ');
+            printf("%c", automaton[i * col + j] ? 'o' : ' ');
         }
         printf("\n");
     }
