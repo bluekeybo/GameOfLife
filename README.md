@@ -69,3 +69,13 @@ This will run the game the same way as in the previous example.
 
 Here is the resulting simulation:<br>
 <img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGliders.gif" alt="Two Gliders" width="500"/>
+
+3. Random Board<br>
+Compile: <br>
+  `gcc gameOfLife.c -o gameOfLife`<br>
+Run: <br>
+  `./gameOfLife -random 30 100 -time 150`<br>
+This will generate a random board (with random dead and alive cells). The board size is 30 rows by 100 columns and the speed will be 150 milliseconds. The game will run for only 1000 generations.
+
+Here is the resulting simulation:<br>
+<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/randomBoard.gif" alt="Random Board" width="500"/>
