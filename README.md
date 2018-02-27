@@ -22,14 +22,12 @@ The rules are:
 ..........................
 ```
 
-Dots are used for creating the wrap around effect. Each dot is replaced by
-the opposite side's value. These extra values are not printed, they're just 
-used for calculating the rules correctly.
+Dots are used for creating the wrap around effect. Each dot is replaced by the opposite side's value. These extra values are not printed, they're just used for calculating the rules correctly. This allows the automata to develop as if the board size is infinite.
 
-However, the input file provided with the -input option must follow the
-following convention, for easier data entering purposes:
+However, the input file provided with the -input option must adhere to the following convention, for easier data entering purposes:
 
-Input file game board: '1' represents alive cell; '0' represents dead cell
+##### Input file game board: '1' represents an alive cell; '0' represents a dead cell
+```text
 ..........................
 .000000000000111100000000.
 .000000111000111000000000.
@@ -37,11 +35,13 @@ Input file game board: '1' represents alive cell; '0' represents dead cell
 .000000111110001000000000.
 .000000000111111110000000.
 ..........................
+```
 
 Also the program internally uses this convention of 1s and 0s.
-For a sample input file, see the "inputGame" file.
 
-Usage:
+For a sample input file, see the "inputGame" file in the *src* directory.
+
+#### Usage:
 Usage for generating a random board:
     <filename> -random rows columns [-time timeMilli] [-gen numberOfGen]
 Usage for supplying an input board:
