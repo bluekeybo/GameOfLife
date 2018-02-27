@@ -50,7 +50,7 @@ Note: default timeMilli is 200.<br>
 Note: default number of generations is infinite.
 
 #### Examples:
-1. Two Gosper Glider Guns
+1. Two Gosper Glider Guns<br>
 Compile: <br>
   `gcc gameOfLife.c -o gameOfLife`<br>
 Run: <br>
@@ -60,7 +60,7 @@ This will run the game using the input file provided as input and updating the b
 Here is the resulting simulation:<br>
 <img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGosperGliderGuns.gif" alt="Two Gosper Glider Guns" width="500"/>
 
-2. Two Gliders
+2. Two Gliders<br>
 Compile: <br>
   `gcc gameOfLife.c -o gameOfLife`<br>
 Run: <br>
