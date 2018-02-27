@@ -1,13 +1,13 @@
 /*
- * This porgram implements the Game of Life by John Conway.
- * The rules are:
- * 1. Any live cell with fewer than two live neighbours dies 
- *    (underpopulation).
- * 2. Any live cell with two or three live neighbours lives to next 
- *    generation.
- * 3. Any live cell with more than three live neighbours dies 
- *    (overpopulation).
- * 4. Any dead cell with exactly three live neighbours comes alive.
+This porgram implements the Game of Life by John Conway.
+The rules are:
+1. Any live cell with fewer than two live neighbours dies 
+   (underpopulation).
+2. Any live cell with two or three live neighbours lives to next 
+   generation.
+3. Any live cell with more than three live neighbours dies 
+   (overpopulation).
+4. Any dead cell with exactly three live neighbours comes alive.
 
 Game Board: 'o' represents alive cell; ' ' represents dead cell
 ..........................
