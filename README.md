@@ -50,12 +50,22 @@ Note: default timeMilli is 200.<br>
 Note: default number of generations is infinite.
 
 #### Example:
+1. Two Gosper Glider Guns
 Compile: <br>
   `gcc gameOfLife.c -o gameOfLife`<br>
 Run: <br>
-  `./gameOfLife -input twoGosperGliderGuns -time 150`<br>
-This will run the game using the input file provided as input and updating the board every 150 milliseconds. Since *-gen* option was not provided, the program will run indefinitely (until user stops it with CTRL + \\).
+  `./gameOfLife -input twoGosperGliderGuns -time 100`<br>
+This will run the game using the input file provided as input and updating the board every 100 milliseconds. Since *-gen* option was not provided, the program will run indefinitely (until user stops it with CTRL + \\).
 
 Here is the resulting simulation:<br>
-![Two Gosper Glider Guns](https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGosperGliderGuns.gif)
 <img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGosperGliderGuns.gif" alt="Two Gosper Glider Guns" width="500"/>
+
+2. Two Gliders
+Compile: <br>
+  `gcc gameOfLife.c -o gameOfLife`<br>
+Run: <br>
+  `./gameOfLife -input twoGliders -time 100`<br>
+This will run the game the same way as in the previous example.
+
+Here is the resulting simulation:<br>
+<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGliders.gif" alt="Two Gliders" width="500"/>
