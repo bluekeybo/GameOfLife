@@ -1,7 +1,7 @@
 # Conway's Game of Life
 #### A terminal-based implementation in C
 
-This program implements the Game of Life by John Conway in C.
+This program implements [The Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) by John Conway, in C.
 #### The rules are:
 1. Any live cell with fewer than two live neighbours dies 
    (underpopulation).
