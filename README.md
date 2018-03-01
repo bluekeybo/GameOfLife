@@ -26,7 +26,7 @@ For some sample rle input files, see the **\*.rle** files in the **_src_** direc
 ```
 If you wish to provide your own custom patterns in plaintext format, you can do so by following this convention. All the rows must be the same length. Use a **1** to represent an alive cell and a **0** to represent a dead cell.
 
-For a sample input file, see the **inputGame** file in the **_src_** directory.
+For a sample input file, see the **twoGosperGliderGuns** file in the **_src_** directory.
 
 ##### Printed Board: 'o' represents an alive cell; ' ' represents a dead cell
 ```text
