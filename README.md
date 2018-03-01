@@ -14,7 +14,7 @@ This program implements [The Game of Life](https://en.wikipedia.org/wiki/Conway%
 ##### Game Board
 The program supports the **RLE** file format, which stands for [Run Length Encoded](http://www.conwaylife.com/w/index.php?title=Run_Length_Encoded). This means that you can load and run any game board from over a thousand patterns hosted at the [LifeWiki](http://www.conwaylife.com/wiki/Main_Page) website.
 
-For some sample rle input files, see the **\*.rle** files in the **_src_** directory.
+For some sample rle input files, see the **\*.rle** files in the **_inputPatterns_** directory.
 
 ##### Custom Game Board: '1' represents an alive cell; '0' represents a dead cell
 ```text
@@ -26,7 +26,7 @@ For some sample rle input files, see the **\*.rle** files in the **_src_** direc
 ```
 If you wish to provide your own custom patterns in plaintext format, you can do so by following this convention. All the rows must be the same length. Use a **1** to represent an alive cell and a **0** to represent a dead cell.
 
-For a sample input file, see the **twoGosperGliderGuns** file in the **_src_** directory.
+For a sample input file, see the **twoGosperGliderGuns** file in the **_inputPatterns_** directory.
 
 ##### Printed Board: 'o' represents an alive cell; ' ' represents a dead cell
 ```text
@@ -41,15 +41,17 @@ For a sample input file, see the **twoGosperGliderGuns** file in the **_src_** d
 The printed board consists of an **o** to represent an alive cell and a **_** (space) to represent a dead cell. The dots shown above are used for creating the wrap around effect. Each dot is replaced by the opposite side's value. These extra values are not printed, they're just used for calculating the rules correctly. This allows the automata to develop as if the board is continuous and wraps around itself.
 
 #### Usage:
+The source file and the input pattern file must be in the same directory when running the program.
+
 To compile, run:<br>
   `gcc gameOfLife.c -o <filename>`<br>
 Generating a random board:<br>
   `<filename> -random rows columns [-time timeMilli] [-gen numberOfGen]`<br>
 Supplying an input board:<br>
-  `<filename> -input filename [-time timeMilli] [-gen numberOfGen]`<br>
+  `<filename> -input inputPattern [-time timeMilli] [-gen numberOfGen]`<br>
 Note: default timeMilli is 200.<br>
 Note: default number of generations is infinite.
-Note: if the input filename ends in *.rle* the program will use the **RLE** format.
+Note: if the inputPattern file ends in *.rle* the program will use the **RLE** format.
 
 #### Examples:
 1. Two Gosper Glider Guns<br>
