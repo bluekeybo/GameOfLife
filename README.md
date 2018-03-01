@@ -12,7 +12,7 @@ This program implements [The Game of Life](https://en.wikipedia.org/wiki/Conway%
 4. Any dead cell with exactly three live neighbours comes alive.
 
 ##### Game Board
-The program supports the **RLE** file format, which stands for [Run Length Encoded](http://www.conwaylife.com/w/index.php?title=Run_Length_Encoded). This means that you can load and run any game board from over a thousand patterns hosted at the [LifeWiki](http://www.conwaylife.com/wiki/Main_Page) website.
+The program supports the **RLE** file format, which stands for [Run Length Encoded](http://www.conwaylife.com/w/index.php?title=Run_Length_Encoded). This means that you can load and run any game board from over a thousand patterns hosted on the [LifeWiki](http://www.conwaylife.com/wiki/Main_Page) website.
 
 For some sample rle input files, see the **\*.rle** files in the **_inputPatterns_** directory.
 
