@@ -4,7 +4,7 @@ Thank you for wanting to be a contributor!
 
 ## Submitting changes
 
-Please send a [GitHub Pull Request to GameOfLife](https://github.com/bluekeybo/GameOfLife) with a clear list of what you've done (read more about [pull requests](https://help.github.com/articles/about-pull-requests/)). Please follow our coding conventions (below) and make sure all of your commits are atomic (one feature per commit).
+Please send a GitHub Pull Request to [GameOfLife](https://github.com/bluekeybo/GameOfLife) with a clear list of what you've done (read more about [pull requests](https://help.github.com/articles/about-pull-requests/)). Please follow our coding conventions (below) and make sure all of your commits are atomic (one feature per commit).
 
 Always write a clear log message for your commits. One-line messages are fine for small changes, but bigger changes should look like this:
 
@@ -14,7 +14,7 @@ Always write a clear log message for your commits. One-line messages are fine fo
 
 ## Coding conventions
 
-Start reading our code and you'll get the hang of it. We optimize for readability:
+Start reading our code and you'll get a hang of it. We optimize for readability:
 
   * We indent using four spaces (soft tabs)
   * We ALWAYS put spaces around operators (`x += 1`, not `x+=1`)
