@@ -184,8 +184,9 @@ bool * rleGame(int *row, int *col, char *fileName) {
     ssize_t nread;
     int i = 0;
     char numbers[10];
-    int val = 0;
+    unsigned int val = 0;
     char c;
+    unsigned iter = 0;
 
     fp = fopen (fileName, "r");
     if(!fp) {
@@ -199,28 +200,54 @@ bool * rleGame(int *row, int *col, char *fileName) {
         }
         else if(line[0] == 'x') {
             sscanf(line, "x = %d, y = %d", col, row);
+            /* Addign extra row and column to avoid unintended wrap-around */
+            (*row) += 2;
+            (*col) += 2;
             automaton = (bool*)calloc((*row * *col), sizeof(bool));
+            if (automaton == NULL) {
+                fprintf(stderr, "Error! Memory allocation failed!\n");
+                exit(1);
+            }
             break;
         }      
     }
 
-    /* Numbers are separated from letters. A 0 is placed when a 1 is ommitted. */
-    
+    /* Adding a blank line as the first line */
+    iter = *col + 1;
+
+    /* Numbers are separated from letters. A 0 is placed when a 1 is omitted. */
     while((c = fgetc(fp)) != EOF) {
         if(isdigit(c)) {
             numbers[i++] = c;
         }
-        else if (isalpha(c) || (c == '\n')) {
+        else {
             numbers[i] = '\0';
             val = atoi(numbers);
-            printf("%d ", val);
+
+            /* Increment val if it's a zero. It represents an omitted 1 */
+            if(!val) {
+                val++;
+            }
+            if (c == 'o') {
+                val += iter;
+                for (; iter < val; iter++) {
+                    automaton[iter] = 1;
+                }
+            }
+            else if (c == '$'){
+                /* Skipping all the new lines */
+                /* Adding +2 to skip the added empty cells */
+                iter += (*col * (val - 1)) + 2;
+            }
+            else if (c == 'b') {
+                iter += val;
+            }
             i = 0;
         }
     }
 
     fclose(fp);
 
-    exit(1);
     return automaton;
 }
 
