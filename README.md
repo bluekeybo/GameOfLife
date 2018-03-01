@@ -50,7 +50,7 @@ Generating a random board:<br>
 Supplying an input board:<br>
   `<filename> -input inputPattern [-time timeMilli] [-gen numberOfGen]`<br>
 Note: default timeMilli is 200.<br>
-Note: default number of generations is infinite.
+Note: default number of generations is infinite.<br>
 Note: if the inputPattern file ends in *.rle* the program will use the **RLE** format.
 
 #### Examples:
