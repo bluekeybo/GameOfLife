@@ -187,6 +187,7 @@ bool * rleGame(int *row, int *col, char *fileName) {
     unsigned int val = 0;
     char c;
     unsigned iter = 0;
+    int colCounter = 0;
 
     fp = fopen (fileName, "r");
     if(!fp) {
@@ -212,6 +213,8 @@ bool * rleGame(int *row, int *col, char *fileName) {
         }      
     }
 
+    colCounter = 0;
+    
     /* Adding a blank line as the first line */
     iter = *col + 1;
 
@@ -229,6 +232,7 @@ bool * rleGame(int *row, int *col, char *fileName) {
                 val++;
             }
             if (c == 'o') {
+                colCounter += val;
                 val += iter;
                 for (; iter < val; iter++) {
                     automaton[iter] = 1;
@@ -237,9 +241,13 @@ bool * rleGame(int *row, int *col, char *fileName) {
             else if (c == '$'){
                 /* Skipping all the new lines */
                 /* Adding +2 to skip the added empty cells */
-                iter += (*col * (val - 1)) + 2;
+                /* colCounter term is used in case $ assumes the rest of the
+                    line is filled with zeros */
+                iter += (*col * (val - 1)) + 2 + (*col - colCounter - 2);
+                colCounter = 0;
             }
             else if (c == 'b') {
+                colCounter += val;
                 iter += val;
             }
             i = 0;
