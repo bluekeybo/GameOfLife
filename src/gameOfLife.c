@@ -51,15 +51,18 @@ Notes: default timeMilli is 200 (board updates every 200 milliseconds)
 #define _POSIX_C_SOURCE 199309L
 /* Nanoseconds in a millisecond */
 #define NANOMILLI 1000000
+#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include <string.h>
 #include <time.h>
 
 void usage(char *fileName);
-bool * createGame(int isRand, int isInput, int *row, int *col, char **argv);
+bool * createGame(int isRand, int isInput, int *row, int *col, char *fileName);
+bool * rleGame(int *row, int *col, char *fileName);
 void nextGen(bool automaton[], bool automatonPadded[], int row, int col);
 void addPadding(bool automaton[], bool automatonPadded[], int row, int col);
 void printGame(bool automaton[], int row, int col);
@@ -76,6 +79,7 @@ int main(int argc, char *argv[]) {
     int col;
     bool *automaton;
     bool *automatonPadded;
+    char *fileName;
 
     if (argc < 3) {
         usage(argv[0]);
@@ -85,21 +89,51 @@ int main(int argc, char *argv[]) {
     {
         if(!strcmp(argv[i], "-random")) {
             rand = 1;
+            if((i + 2) < argc ) {
+                row = atoi(argv[i + 1]);
+                col = atoi(argv[i + 2]);
+            }
+            else {
+                usage(argv[0]);
+            }
+            
         }
         else if(!strcmp(argv[i], "-input")) {
             input = 1;
+            if((i + 1) < argc ) {
+                fileName = argv[i + 1];
+            }
+            else {
+                usage(argv[0]);
+            }
         }
         else if(!strcmp(argv[i], "-time")) {
-            timeN = atoi(argv[i + 1]) * NANOMILLI;
+            if((i + 1) < argc ) {
+                timeN = atoi(argv[i + 1]) * NANOMILLI;
+            }
+            else {
+                usage(argv[0]);
+            }
         }
         else if(!strcmp(argv[i], "-gen")) {
             generations = atoi(argv[i + 1]);
         }
     }
 
+    /* Making sure only one game option has been set */
+    if(!(rand ^ input)) {
+        usage(argv[0]);
+    }
+
     sleepValue.tv_nsec = timeN;
 
-    automaton = createGame(rand, input, &row, &col, argv);
+    /* Checking if an rle file has been provided */
+     if(input && strstr(fileName, ".rle")) {
+         automaton = rleGame(&row, &col, fileName);
+     }
+     else {
+         automaton = createGame(rand, input, &row, &col, fileName);
+     }
 
     automatonPadded = (bool*)malloc((row + 2) * (col + 2) * sizeof(bool));
     if (automatonPadded == NULL) {
@@ -142,9 +176,91 @@ Notes: default timeMilli is 200 (board updates every 200 milliseconds).\n\
     exit(1);
 }
 
-bool * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
+bool * rleGame(int *row, int *col, char *fileName) {
     bool *automaton;
-    char *fileName;
+    FILE *fp;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t nread;
+    int i = 0;
+    char numbers[10];
+    unsigned int val = 0;
+    char c;
+    unsigned iter = 0;
+    int colCounter = 0;
+
+    fp = fopen (fileName, "r");
+    if(!fp) {
+        fprintf(stderr, "Could not open file!\n");
+        exit(1);
+    }
+
+    while ((nread = getline(&line, &len, fp)) != -1) {
+        if(line[0] == '#') {
+            continue;
+        }
+        else if(line[0] == 'x') {
+            sscanf(line, "x = %d, y = %d", col, row);
+            /* Addign extra row and column to avoid unintended wrap-around */
+            (*row) += 2;
+            (*col) += 2;
+            automaton = (bool*)calloc((*row * *col), sizeof(bool));
+            if (automaton == NULL) {
+                fprintf(stderr, "Error! Memory allocation failed!\n");
+                exit(1);
+            }
+            break;
+        }      
+    }
+
+    colCounter = 0;
+    
+    /* Adding a blank line as the first line */
+    iter = *col + 1;
+
+    /* Numbers are separated from letters. A 0 is placed when a 1 is omitted. */
+    while((c = fgetc(fp)) != EOF) {
+        if(isdigit(c)) {
+            numbers[i++] = c;
+        }
+        else {
+            numbers[i] = '\0';
+            val = atoi(numbers);
+
+            /* Increment val if it's a zero. It represents an omitted 1 */
+            if(!val) {
+                val++;
+            }
+            if (c == 'o') {
+                colCounter += val;
+                val += iter;
+                for (; iter < val; iter++) {
+                    automaton[iter] = 1;
+                }
+            }
+            else if (c == '$'){
+                /* Skipping all the new lines */
+                /* Adding +2 to skip the added empty cells */
+                /* colCounter term is used in case $ assumes the rest of the
+                    line is filled with zeros */
+                iter += (*col * (val - 1)) + 2 + (*col - colCounter - 2);
+                colCounter = 0;
+            }
+            else if (c == 'b') {
+                colCounter += val;
+                iter += val;
+            }
+            i = 0;
+        }
+    }
+
+    fclose(fp);
+
+    return automaton;
+}
+
+bool * createGame(int isRand, int isInput, int *row, int *col, char *fileName) {
+    bool *automaton;
     FILE *fp;
     int c;
     int x = 0;
@@ -153,10 +269,8 @@ bool * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
     int i = 0;
     int mult = 0;
 
-    if (isRand && !isInput) {
+    if (isRand) {
         srand(time(0));
-        *row = atoi(argv[2]);
-        *col = atoi(argv[3]);
         mult = *row * *col;
 
         automaton = (bool*)malloc(mult * sizeof(bool));
@@ -169,15 +283,17 @@ bool * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
         }
         return automaton;
     }
-    else if (!isRand && isInput) {
-        fileName = argv[2];
-
+    else if (isInput) {
         x = 0;
         y = 0;
         maxCol = 0;
 
         /* Figure out number of rows and columns in file */
         fp = fopen (fileName, "r");
+        if(!fp) {
+            fprintf(stderr, "Could not open file!\n");
+            exit(1);
+        }
         while((c = fgetc(fp)) != EOF) {
             if(c == '\n') {
                 x++;
@@ -215,6 +331,10 @@ bool * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
         /* Put file contents into automaton array */
         x = 0;
         fp = fopen (fileName, "r");
+        if(!fp) {
+            fprintf(stderr, "Could not open file!\n");
+            exit(1);
+        }
         while(!feof(fp)) {
             c = fgetc(fp);
             if(c == '1') {
@@ -228,9 +348,6 @@ bool * createGame(int isRand, int isInput, int *row, int *col, char **argv) {
         }
         fclose(fp);
         return automaton;
-    }
-    else {
-        usage(argv[0]);
     }
     return 0;
 }

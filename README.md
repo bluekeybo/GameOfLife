@@ -11,7 +11,24 @@ This program implements [The Game of Life](https://en.wikipedia.org/wiki/Conway%
    (overpopulation).
 4. Any dead cell with exactly three live neighbours comes alive.
 
-##### Game Board: 'o' represents an alive cell; ' ' represents a dead cell
+##### Game Board
+The program supports the **RLE** file format, which stands for [Run Length Encoded](http://www.conwaylife.com/w/index.php?title=Run_Length_Encoded). This means that you can load and run any game board from over a thousand patterns hosted at the [LifeWiki](http://www.conwaylife.com/wiki/Main_Page) website.
+
+For some sample rle input files, see the **\*.rle** files in the **_src_** directory.
+
+##### Custom Game Board: '1' represents an alive cell; '0' represents a dead cell
+```text
+000000000000111100000000
+000000111000111000000100
+000000000001111000000010
+000000111110001000001110
+000000000111111110000000
+```
+If you wish to provide your own custom patterns in plaintext format, you can do so by following this convention. All the rows must be the same length. Use a **1** to represent an alive cell and a **0** to represent a dead cell.
+
+For a sample input file, see the **twoGosperGliderGuns** file in the **_src_** directory.
+
+##### Printed Board: 'o' represents an alive cell; ' ' represents a dead cell
 ```text
 ..........................
 .            oooo        .
@@ -21,23 +38,7 @@ This program implements [The Game of Life](https://en.wikipedia.org/wiki/Conway%
 .         oooooooo       .
 ..........................
 ```
-
-Dots are used for creating the wrap around effect. Each dot is replaced by the opposite side's value. These extra values are not printed, they're just used for calculating the rules correctly. This allows the automata to develop as if the board size is infinite.
-
-However, the input file provided with the *-input* option must adhere to the following convention, for easier data entering purposes:
-
-##### Input file game board: '1' represents an alive cell; '0' represents a dead cell
-```text
-000000000000111100000000
-000000111000111000000100
-000000000001111000000010
-000000111110001000001110
-000000000111111110000000
-```
-
-Also the program internally uses this convention of 1s and 0s.
-
-For a sample input file, see the **inputGame** file in the **_src_** directory.
+The printed board consists of an **o** to represent an alive cell and a **_** (space) to represent a dead cell. The dots shown above are used for creating the wrap around effect. Each dot is replaced by the opposite side's value. These extra values are not printed, they're just used for calculating the rules correctly. This allows the automata to develop as if the board is continuous and wraps around itself.
 
 #### Usage:
 To compile, run:<br>
@@ -45,9 +46,10 @@ To compile, run:<br>
 Generating a random board:<br>
   `<filename> -random rows columns [-time timeMilli] [-gen numberOfGen]`<br>
 Supplying an input board:<br>
-  `<filename> -input inputGame [-time timeMilli] [-gen numberOfGen]`<br>
+  `<filename> -input filename [-time timeMilli] [-gen numberOfGen]`<br>
 Note: default timeMilli is 200.<br>
 Note: default number of generations is infinite.
+Note: if the input filename ends in *.rle* the program will use the **RLE** format.
 
 #### Examples:
 1. Two Gosper Glider Guns<br>
@@ -79,3 +81,13 @@ This will generate a random board (with random dead and alive cells). The board 
 
 Here is the resulting simulation:<br>
 <img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/randomBoard.gif" alt="Random Board" width="500"/>
+
+4. **RLE** Board<br>
+Compile: <br>
+  `gcc gameOfLife.c -o gameOfLife`<br>
+Run: <br>
+  `./gameOfLife -input lightspeedoscillator1.rle`<br>
+This will generate the board using the **RLE** format. The pattern used is the [*Light Speed Oscillator 1*](http://www.conwaylife.com/wiki/Light_speed_oscillator_1).
+
+Here is the resulting simulation:<br>
+<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/lightSpeedOscillator1.gif" alt="RLE Format Board" width="500"/>
