@@ -52,7 +52,7 @@ Notes:
 * default timeMilli is 200.  
 * default number of generations is infinite.  
 * if the inputPattern file ends in *.rle* the program will use the **RLE** format.  
-* if the input file is not in the same directory, please provide the full path when using the *-input* option.  
+* if the input file is not in the same directory, please provide the path to it when using the *-input* option.  
 
 #### Examples:
 1. Two Gosper Glider Guns<br>
