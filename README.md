@@ -49,10 +49,10 @@ Supplying an input board:<br>
   `<filename> -input inputPattern [-time timeMilli] [-gen numberOfGen]`<br>
   
 Notes:  
-	* default timeMilli is 200.  
-	* default number of generations is infinite.  
-	* if the inputPattern file ends in *.rle* the program will use the **RLE** format.  
-	* if the input file is not in the same directory, please provide full path with *-input* option.  
+* default timeMilli is 200.  
+* default number of generations is infinite.  
+* if the inputPattern file ends in *.rle* the program will use the **RLE** format.  
+* if the input file is not in the same directory, please provide full path with *-input* option.  
 
 #### Examples:
 1. Two Gosper Glider Guns<br>
