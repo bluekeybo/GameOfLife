@@ -47,9 +47,11 @@ Generating a random board:<br>
   `<filename> -random rows columns [-time timeMilli] [-gen numberOfGen]`<br>
 Supplying an input board:<br>
   `<filename> -input inputPattern [-time timeMilli] [-gen numberOfGen]`<br>
-Note: default timeMilli is 200.  
-Note: default number of generations is infinite.  
-Note: if the inputPattern file ends in *.rle* the program will use the **RLE** format.
+  
+Notes: * default timeMilli is 200.  
+       * default number of generations is infinite.  
+       * if the inputPattern file ends in *.rle* the program will use the **RLE** format.
+       * if the input file is not in the same directory, please provide full path with *-input* option.  
 
 #### Examples:
 1. Two Gosper Glider Guns<br>
@@ -62,15 +64,15 @@ This will run the game using the input file provided as input and updating the b
 Here is the resulting simulation:<br>
 <img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGosperGliderGuns.gif" alt="Two Gosper Glider Guns" width="500"/>
 
-2. Two Gliders<br>
+2. Multiple Gliders<br>
 Compile: <br>
   `gcc gameOfLife.c -o gameOfLife`<br>
 Run: <br>
-  `./gameOfLife -input twoGliders -time 100`<br>
+  `./gameOfLife -input rainingGliders -time 100`<br>
 This will run the game the same way as in the previous example.
 
 Here is the resulting simulation:<br>
-<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/twoGliders.gif" alt="Two Gliders" width="500"/>
+<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/rainingGliders.gif" alt="Multiple Gliders" width="500"/>
 
 3. Random Board<br>
 Compile: <br>
