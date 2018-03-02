@@ -41,8 +41,6 @@ For a sample input file, see the **twoGosperGliderGuns** file in the **_inputPat
 The printed board consists of an '**o**' to represent an alive cell and a '**_**' (space) to represent a dead cell. The dots shown above are used for creating the wrap around effect. Each dot is replaced by the opposite side's value. These extra values are not printed, they're just used for calculating the rules correctly. This allows the automata to develop as if the board is continuous and wraps around itself.
 
 #### Usage:
-The source file and the input pattern file must be in the same directory when running the program.
-
 To compile, run:<br>
   `gcc gameOfLife.c -o <filename>`<br>
 Generating a random board:<br>
