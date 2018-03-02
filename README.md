@@ -12,9 +12,9 @@ This program implements [The Game of Life](https://en.wikipedia.org/wiki/Conway%
 4. Any dead cell with exactly three live neighbours comes alive.
 
 ##### Game Board
-The program supports the **RLE** file format, which stands for [Run Length Encoded](http://www.conwaylife.com/w/index.php?title=Run_Length_Encoded). This means that you can load and run any game board from over a thousand patterns hosted at the [LifeWiki](http://www.conwaylife.com/wiki/Main_Page) website.
+The program supports the **RLE** file format, which stands for [Run Length Encoded](http://www.conwaylife.com/w/index.php?title=Run_Length_Encoded). This means that you can load and run any game board from over a thousand patterns hosted on the [LifeWiki](http://www.conwaylife.com/wiki/Main_Page) website.
 
-For some sample rle input files, see the **\*.rle** files in the **_inputPatterns_** directory.
+For some sample rle input files, see the **\*.rle** files in the `inputPatterns` directory.
 
 ##### Custom Game Board: '1' represents an alive cell; '0' represents a dead cell
 ```text
@@ -26,7 +26,7 @@ For some sample rle input files, see the **\*.rle** files in the **_inputPattern
 ```
 If you wish to provide your own custom patterns in plaintext format, you can do so by following this convention. All the rows must be the same length. Use a **1** to represent an alive cell and a **0** to represent a dead cell.
 
-For a sample input file, see the **twoGosperGliderGuns** file in the **_inputPatterns_** directory.
+For a sample input file, see the **twoGosperGliderGuns** file in the `inputPatterns` directory.
 
 ##### Printed Board: 'o' represents an alive cell; ' ' represents a dead cell
 ```text
@@ -90,4 +90,8 @@ Run: <br>
 This will generate the board using the **RLE** format. The pattern used is the [*Light Speed Oscillator 1*](http://www.conwaylife.com/wiki/Light_speed_oscillator_1).
 
 Here is the resulting simulation:<br>
-<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/lightSpeedOscillator1.gif" alt="RLE Format Board" width="500"/>
+<img src="https://github.com/bluekeybo/GameOfLife/blob/master/media/lightSpeedOscillator1.gif" alt="RLE Format Board" width="500"/>  
+  
+For details on Code of Conduct, Issue and Pull requests and Contributing Guidelines, please see the `docs` directory.  
+
+Enjoy!
