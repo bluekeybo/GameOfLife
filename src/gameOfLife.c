@@ -1,5 +1,5 @@
 /*
-This porgram implements the Game of Life by John Conway.
+This program implements the Game of Life by John Conway.
 The rules are:
 1. Any live cell with fewer than two live neighbours dies 
    (underpopulation).
@@ -9,42 +9,7 @@ The rules are:
    (overpopulation).
 4. Any dead cell with exactly three live neighbours comes alive.
 
-Game Board: 'o' represents alive cell; ' ' represents dead cell
-..........................
-.            oooo        .
-.      ooo   ooo      o  .
-.           oooo       o .
-.      ooooo   o     ooo .
-.         oooooooo       .
-..........................
-
-Dots are used for creating the wrap around effect. Each dot is replaced by
-the opposite side's value. These extra values are not printed, they're just 
-used for calculating the rules correctly.
-
-However, the input file provided with the -input option must follow the
-following convention, for easier data entering purposes:
-
-Input file game board: '1' represents alive cell; '0' represents dead cell
-..........................
-.000000000000111100000000.
-.000000111000111000000000.
-.000000000001111000000000.
-.000000111110001000000000.
-.000000000111111110000000.
-..........................
-
-Also the program internally uses this convention of 1s and 0s.
-For a sample input file, see the "inputGame" file.
-
-Usage:
-Usage for generating a random board:
-    <filename> -random rows columns [-time timeMilli] [-gen numberOfGen]
-Usage for supplying an input board:
-    <filename> -input inputGame [-time timeMilli] [-gen numberOfGen]
-Notes: default timeMilli is 200 (board updates every 200 milliseconds)
-       default number of generations is infinite
-       to cancel an infinite program at any time just press CTRL + \
+See README.md for more information.
 */
 
 /* This line used to enable nanoseconds */
@@ -164,6 +129,11 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+
+/* This is a usage function that shows correct program invocation.
+*  Arguments: the filename.
+*  Returns: none.
+*/
 void usage(char *fileName) {
     fprintf(stderr, "Usage for generating a random board:\n\
     %s -random rows columns [-time timeMilli] [-gen numberOfGen]\n\n\
@@ -176,6 +146,12 @@ Notes: default timeMilli is 200 (board updates every 200 milliseconds).\n\
     exit(1);
 }
 
+
+/* This function creates the gameboard if rle file is used.
+*  Arguments: rows, columns (set by the function to match automaton),
+*       filename.
+*  Returns: automaton array for the game board.
+*/
 bool * rleGame(int *row, int *col, char *fileName) {
     bool *automaton;
     FILE *fp;
@@ -259,6 +235,12 @@ bool * rleGame(int *row, int *col, char *fileName) {
     return automaton;
 }
 
+
+/* This function creates the gameboard for a custom input board file
+*  Arguments: isRand, isInput (flags to check if random board or custom one).
+*       rows, columns (set by the function to match automaton), filename.
+*  Returns: automaton array for the game board.
+*/
 bool * createGame(int isRand, int isInput, int *row, int *col, char *fileName) {
     bool *automaton;
     FILE *fp;
@@ -352,6 +334,14 @@ bool * createGame(int isRand, int isInput, int *row, int *col, char *fileName) {
     return 0;
 }
 
+
+/* This function creates the next generation of the game. The current 
+*       generation is in automatonPadded. The next generation is in 
+*       automaton. The row and col are from automatonPadded (so row and col
+*       are both 2 more than the non-padded row and col).
+*  Arguments: current automaton, padded automaton, row, col.
+*  Returns: none.
+*/
 void nextGen(bool *automaton, bool *automatonPadded, int row, int col) {
     int i;
     int j;
@@ -385,6 +375,15 @@ void nextGen(bool *automaton, bool *automatonPadded, int row, int col) {
     }
 }
 
+
+/* This function adds padding to the current automaton board. The padding is
+*       two extra rows and columns, having a value of the opposite row/col. 
+*       This is used to create the wrap-around effect, where if a cell 
+*       disappears on the edge, it reappears on the other side of the board.
+*       The row and col are from automaton.
+*  Arguments: automaton, padded automaton, row, col.
+*  Returns: none.
+*/
 void addPadding(bool automaton[], bool automatonPadded[], int row, int col) {
     int i = 0;
     int j = 0;
@@ -427,6 +426,12 @@ void addPadding(bool automaton[], bool automatonPadded[], int row, int col) {
     }
 }
 
+
+/* This function prints the board game to terminal. The row and col are from 
+*       automaton.
+*  Arguments: automaton, row, col.
+*  Returns: none.
+*/
 void printGame(bool *automaton, int row, int col) {
     int i;
     int j;
